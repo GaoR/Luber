@@ -1,3 +1,8 @@
+#Node Modules
 node_modules
-client/dist/bundle.js
+
+#JS Bundle
+public/bundle.js
+
+#API keys
 apiKeys.json
