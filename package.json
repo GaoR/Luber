@@ -1,0 +1,60 @@
+{
+  "name": "luber",
+  "version": "1.0.0",
+  "description": "A ride-share price-comparison app",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/index.js",
+    "build-dev": "webpack --watch --config webpack.dev.js",
+    "build-prod": "webpack --config webpack.prod.js",
+    "start-prod": "node server/index.js",
+    "lint": "eslint .",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GaoR/Luber.git"
+  },
+  "keywords": [
+    "ride-share",
+    "uber",
+    "lyft",
+    "cob"
+  ],
+  "author": "Rob Gao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GaoR/Luber/issues"
+  },
+  "homepage": "https://github.com/GaoR/Luber#readme",
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-loader": "^8.0.2",
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-prettier": "^2.6.2",
+    "eslint-plugin-react": "^7.11.1",
+    "nodemon": "^1.18.4",
+    "prettier": "^1.14.2",
+    "regenerator-runtime": "^0.12.1",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-merge": "^4.1.4"
+  },
+  "dependencies": {
+    "node-lyft": "^1.0.3",
+    "cors": "^2.8.4",
+    "axios": "^0.18.0",
+    "express": "^4.16.3",
+    "mongoose": "^5.2.13",
+    "prop-types": "^15.6.2",
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0"
+  }
+}
