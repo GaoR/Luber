@@ -5,6 +5,8 @@ const path = require('path');
 const lyft = require('node-lyft');
 const Uber = require('node-uber');
 const keys = require('../apiKeys');
+const { getLocations, postLocation } = require('../database/index.js');
+
 
 const app = express();
 app.use(cors());
@@ -21,10 +23,24 @@ var uber = new Uber({
   sandbox: true
 });
 
+app.get('/recentPlaces', (req, res) => {
+  getLocations((err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(data);
+    }
+  })
+})
+
 app.get('/api/login', (req, res) => {
   var url = uber.getAuthorizeUrl(['history','profile', 'request', 'places']);
   console.log(url);
-  res.redirect(url);
+  res.send(url);
+})
+
+app.get('/api/map', (req, res) => {
+  axios.get()
 })
 
 app.get('/api/geocode', (req, res) => {
@@ -45,7 +61,7 @@ app.get('/api/geocode', (req, res) => {
             start: location,
             end: data.data.results[0].geometry.location
           }
-          console.log(locations);
+          // console.log(locations);
           res.send(locations);
         })
         .catch((err) => console.log(err));
@@ -62,11 +78,10 @@ app.get('/checkLyft', (req, res) => {
   let apiInstance = new lyft.PublicApi();
   const start = JSON.parse(req.query.start);
   const end = JSON.parse(req.query.end);
-  console.log(start, end);
+  // console.log(start, end);
   
   let opts = { 
-    // 'endLat': 37.7972,
-    // 'endLng': -122.4533
+
     endLat: end.lat,
     endLng: end.lng,
   };
@@ -103,11 +118,17 @@ app.get('/checkUber', (req, res) => {
   // uber.estimates.getPriceForRouteAsync(start_latitude, start_longitude, end_latitude, end_longitude [, seats]);
     uber.estimates.getPriceForRouteAsync(start.lat, start.lng, end.lat, end.lng)
     .then(function(data) { 
-      console.log(data);
       res.send(data.prices);
     })
     .error(function(err) { console.error(err); });
+})
 
+app.post('/postLocation', (req, res) => {
+  postLocation(req.body, (err) => {
+    if (err) {
+      console.log(err);
+    } else res.send('Saved!');
+  })
 })
 
 app.get('/bundle.js', (req, res) => {
