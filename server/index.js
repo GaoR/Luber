@@ -118,6 +118,16 @@ app.get('/styles.css', (req, res) => {
   res.sendFile(path.resolve('public/styles.css'))
 })
 
+app.get('/lyftlogo', (req, res) => {
+  res.sendFile(path.resolve('public/lyftlogo.png'))
+})
+
+app.get('/uberlogo', (req, res) => {
+  res.sendFile(path.resolve('public/uberlogo.jpg'))
+})
+
+
+
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('public/index.html'));
 });

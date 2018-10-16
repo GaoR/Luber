@@ -1,6 +1,19 @@
+body {
+  background-color: black;
+}
 #compare {
   display: flex;
   flex-direction: row;
-  color: red;
 }
 
+#uber {
+  background-color: #000000;
+  color: #FA0086;
+  padding: 10px;
+}
+
+#lyft {
+  background-color: #FA0086;
+  color: #000000;
+  padding: 10px;
+}

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import $ from 'jquery';
-
 
 class App extends Component {
   constructor(props) {
@@ -9,6 +7,8 @@ class App extends Component {
     this.state = {
       lyft: [],
       uber: [],
+      start: '',
+      end: '',
       login: false,
     };
 
@@ -16,29 +16,44 @@ class App extends Component {
     this.checkLyft = this.checkLyft.bind(this);
     this.checkUber = this.checkUber.bind(this);
     this.login = this.login.bind(this);
+    this.test = this.test.bind(this);
+    this.handleStart = this.handleStart.bind(this);
+    this.handleEnd = this.handleEnd.bind(this);
+    this.convertSeconds = this.convertSeconds.bind(this);
   }
 
-  componentDidMount() {
-    // this.checkLyft();
+  handleStart(e) {
+    this.state.start = e.target.value;
   }
 
-  comparePrices(start, end) {
+  handleEnd(e) {
+    this.state.end = e.target.value;
+  }
+
+  convertSeconds(time) {
+    return `${Math.floor(time / 60)} min`
+  }
+
+  test() {
+    console.log(this.state.start);
+    console.log(this.state.end);
+  }
+
+  comparePrices() {
+    const { start, end } = this.state;
     axios.get('/api/geocode', {
-      params: {
-        start: $('#start').val()'944 Market St San Francisco CA',
-        end: '44 Tehama St San Francisco CA',
-      },
+      params: { start, end },
     })
       .then((data) => {
         const locations = {
           start: data.data.start,
           end: data.data.end,
-        }
+        };
         console.log(locations);
         this.checkLyft(locations.start, locations.end);
         this.checkUber(locations.start, locations.end);
       })
-      // .catch(err => console.log(err));
+      .catch(err => console.log(err));
   }
 
   checkLyft(start, end) {
@@ -78,27 +93,40 @@ class App extends Component {
       <div>
         <button type="button" onClick={this.login}>Log In</button>
         <form>
-          <input type="text" placeholder="Start Address" />
-          <input type="text" placeholder="End Address" />
+          <input type="text" onChange={e => this.handleStart(e)} placeholder="Start Address" />
+          <input type="text" onChange={e => this.handleEnd(e)} placeholder="End Address" />
           <button type="button" onClick={this.comparePrices}>Compare Prices!</button>
           <button type="button" onClick={this.test}>Test</button>
         </form>
         <div>Hello React!</div>
         <div id="compare" className="hello">
-          <div id="lyft">
-            {lyft.map(ride => (
-              <div>
-                {`${ride.display_name} | $${(ride.estimated_cost_cents_min / 200)} - ${(ride.estimated_cost_cents_max / 200)} | ${ride.estimated_duration_seconds}s`}
-              </div>
-            ))}
-          </div>
-          <div id="uber">
-            {uber.map(ride => (
-              <div>
-                {`${ride.localized_display_name} | ${ride.estimate} | ${ride.distance} | ${ride.duration}s`}
-              </div>
-            ))}
-          </div>
+          {
+            lyft
+              ? (
+                <div id="lyft">
+                  <img src="/lyftlogo" alt="Lyft Logo" height="120" width="180" />
+                  {lyft.map(ride => (
+                    <div>
+                      {`${ride.display_name} | $${(ride.estimated_cost_cents_min / 100)}-${(ride.estimated_cost_cents_max / 100)} | ${this.convertSeconds(ride.estimated_duration_seconds)}`}
+                    </div>
+                  ))}
+                </div>)
+              : <div />
+          }
+          {
+            uber
+              ? (
+                <div id="uber">
+                  <img src="/uberlogo" alt="Uber Logo" height="120" width="180" />
+                  {uber.map(ride => (
+                    <div>
+                      {`${ride.localized_display_name} | ${ride.estimate} | ${ride.distance} | ${this.convertSeconds(ride.duration)}`}
+                    </div>
+                  ))}
+                </div>)
+              : <div />
+          }
+
         </div>
       </div>
     );
