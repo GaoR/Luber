@@ -48,11 +48,12 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
-    "node-lyft": "^1.0.3",
-    "cors": "^2.8.4",
     "axios": "^0.18.0",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
     "mongoose": "^5.2.13",
+    "node-lyft": "^1.0.3",
+    "node-uber": "^2.0.0",
     "prop-types": "^15.6.2",
     "react": "^16.5.0",
     "react-dom": "^16.5.0"
