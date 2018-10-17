@@ -6,10 +6,12 @@ const lyft = require('node-lyft');
 const Uber = require('node-uber');
 const keys = require('../apiKeys');
 const { getLocations, postLocation } = require('../database/index.js');
-
+const bodyParser = require('body-parser');
 
 const app = express();
+
 app.use(cors());
+app.use(bodyParser.json());
 
 // app.use(express.static(__dirname + '/../public'));
 
@@ -124,6 +126,7 @@ app.get('/checkUber', (req, res) => {
 })
 
 app.post('/postLocation', (req, res) => {
+  console.log(req.body);
   postLocation(req.body, (err) => {
     if (err) {
       console.log(err);
@@ -146,8 +149,6 @@ app.get('/lyftlogo', (req, res) => {
 app.get('/uberlogo', (req, res) => {
   res.sendFile(path.resolve('public/uberlogo.jpg'))
 })
-
-
 
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('public/index.html'));
