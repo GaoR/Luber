@@ -10,12 +10,12 @@ class App extends Component {
       lyft: [],
       uber: [],
       uberURL: '',
-      startAdd: '',
-      endAdd: '',
+      start: '',
+      end: '',
       startCoords: '',
       endCoords: '',
       login: false,
-      map: {},
+      recent: [],
     };
 
     this.comparePrices = this.comparePrices.bind(this);
@@ -26,13 +26,30 @@ class App extends Component {
     this.handleEnd = this.handleEnd.bind(this);
   }
 
-  handleStart(e) {
-    this.state.start = e.target.value;
+  componentDidMount() {
+    axios.get('/recentPlaces')
+      .then((data) => {
+        console.log(data.data);
+        this.setState({
+          recent: data.data,
+        });
+      })
+      .catch(err => console.log(err));
   }
 
-  handleEnd(e) {
-    this.state.end = e.target.value;
+  setRecent(lyft, uber) {
+    this.setState({ lyft, uber });
   }
+
+  // getMap(start, end) {
+  //   axios.get('/api/map', {
+  //     params: { start, end },
+  //   })
+  //     .then(data => this.setState({
+  //       map: data,
+  //     }))
+  //     .catch(err => console.log(err));
+  // }
 
   comparePrices() {
     const { start, end } = this.state;
@@ -47,21 +64,18 @@ class App extends Component {
 
         this.state.startCoords = locations.start;
         this.state.endCoords = locations.end;
-        
         this.checkLyft(locations.start, locations.end);
         this.checkUber(locations.start, locations.end);
       })
       .catch(err => console.log(err));
   }
 
-  getMap(start, end) {
-    axios.get('/api/map', {
-      params: { start, end },
-    })
-      .then(data => this.setState({
-        map: data,
-      }))
-      .catch(err => console.log(err));
+  handleStart(e) {
+    this.state.start = e.target.value;
+  }
+
+  handleEnd(e) {
+    this.state.end = e.target.value;
   }
 
   checkLyft(start, end) {
@@ -74,9 +88,12 @@ class App extends Component {
       .catch(err => console.log(err));
   }
 
-  checkUber(start, end) {
+  checkUber(startLoc, endLoc) {
     axios.get('/checkUber', {
-      params: { start, end },
+      params: {
+        start: startLoc,
+        end: endLoc,
+      },
     })
       .then(data => this.setState({
         uber: data.data,
@@ -85,25 +102,27 @@ class App extends Component {
         const {
           lyft,
           uber,
-          startAdd,
-          endAdd,
+          start,
+          end,
           startCoords,
           endCoords,
         } = this.state;
+
         const data = {
           start: {
-            address: startAdd,
+            address: start,
             lat: startCoords.lat,
             lng: startCoords.lng,
           },
           end: {
-            address: endAdd,
+            address: end,
             lat: endCoords.lat,
             lng: endCoords.lng,
           },
           lyft,
           uber,
         };
+        console.log(data);
         axios.post('/postLocation', data)
           .then(() => console.log('Posted!'))
           .catch(err => console.log(err));
@@ -125,10 +144,10 @@ class App extends Component {
   render() {
     const {
       login,
-      map,
       lyft,
       uber,
       uberURL,
+      recent,
     } = this.state;
     return (
       <div>
@@ -147,8 +166,20 @@ class App extends Component {
           <input type="text" onChange={e => this.handleEnd(e)} placeholder="End Address" />
           <button type="button" onClick={this.comparePrices}>Compare Prices!</button>
         </form>
-        <div>Hello React!</div>
-        <div>{login + map}</div>
+        <div>Recent Searches</div>
+        {
+          login
+            ? ( 
+              <div id="recent">
+                {recent.map(saved => (
+                  <div onClick={() => this.setRecent(saved.lyft, saved.uber)}> 
+                    {`${saved.start.address} ---> ${saved.end.address}`}
+                  </div>
+                ))}
+              </div>
+            )
+            : <div />
+        }
         <div id="compare" className="hello">
           {
             lyft.length > 0
