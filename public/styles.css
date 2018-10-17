@@ -1,5 +1,6 @@
 body {
   background-color: black;
+  color: white;
 }
 #compare {
   display: flex;
@@ -25,4 +26,8 @@ a.button {
 
   text-decoration: none;
   color: initial;
+}
+
+#recent {
+  color: white;
 }
