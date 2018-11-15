@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
-const convertSeconds = time => `${Math.floor(time / 60)} min`;
+import Lyft from './lyftResults';
+import Uber from './uberResults';
 
 class App extends Component {
   constructor(props) {
@@ -29,7 +29,6 @@ class App extends Component {
   componentDidMount() {
     axios.get('/recentPlaces')
       .then((data) => {
-        console.log(data.data);
         this.setState({
           recent: data.data,
         });
@@ -169,11 +168,13 @@ class App extends Component {
         <div>Recent Searches</div>
         {
           login
-            ? ( 
+            ? (
               <div id="recent">
                 {recent.map(saved => (
-                  <div onClick={() => this.setRecent(saved.lyft, saved.uber)}> 
-                    {`${saved.start.address} ---> ${saved.end.address}`}
+                  <div>
+                    <button type="button" className="recentSearch" onClick={() => this.setRecent(saved.lyft, saved.uber)}>
+                      {`${saved.start.address} ---> ${saved.end.address}`}
+                    </button>
                   </div>
                 ))}
               </div>
@@ -181,33 +182,8 @@ class App extends Component {
             : <div />
         }
         <div id="compare" className="hello">
-          {
-            lyft.length > 0
-              ? (
-                <div id="lyft">
-                  <img src="/lyftlogo" alt="Lyft Logo" height="120" width="180" />
-                  {lyft.map(ride => (
-                    <div>
-                      {`${ride.display_name} | $${(ride.estimated_cost_cents_min / 100)}-${(ride.estimated_cost_cents_max / 100)} | ${convertSeconds(ride.estimated_duration_seconds)}`}
-                    </div>
-                  ))}
-                </div>)
-              : <div />
-          }
-          {
-            uber.length > 0
-              ? (
-                <div id="uber">
-                  <img src="/uberlogo" alt="Uber Logo" height="120" width="180" />
-                  {uber.map(ride => (
-                    <div>
-                      {`${ride.localized_display_name} | ${ride.estimate} | ${ride.distance} | ${convertSeconds(ride.duration)}`}
-                    </div>
-                  ))}
-                </div>)
-              : <div />
-          }
-
+          <Lyft lyft={lyft} />
+          <Uber uber={uber} />
         </div>
       </div>
     );
