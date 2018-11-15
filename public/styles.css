@@ -2,9 +2,16 @@ body {
   background-color: black;
   color: white;
 }
+
 #compare {
   display: flex;
   flex-direction: row;
+}
+
+.recentSearch {
+  width: 400px;
+  background-color: black;
+  color: white;
 }
 
 #uber {
